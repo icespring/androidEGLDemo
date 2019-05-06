@@ -69,8 +69,6 @@ public class GLSurfaceViewDrawActivity extends AppCompatActivity {
     private class MyRender implements GLSurfaceView.Renderer {
 
         static final int COORDS_PER_VERTEX = 3;
-        private final int vertexStride = COORDS_PER_VERTEX * 4; // 每个顶点四个字节
-
 
         private FloatBuffer vertexBuffer;
         private int mProgram;
@@ -111,7 +109,7 @@ public class GLSurfaceViewDrawActivity extends AppCompatActivity {
             GLES20.glEnableVertexAttribArray(mPositionHandle);
             //准备三角形的坐标数据
             GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false,
-                    vertexStride, vertexBuffer);
+                    0, vertexBuffer);
             //获取片元着色器的vColor成员的句柄
             mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
             //设置绘制三角形的颜色

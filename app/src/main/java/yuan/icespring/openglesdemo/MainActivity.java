@@ -14,7 +14,8 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static Class[] activities = {GLSurfaceViewDrawActivity.class};
+    private static Class[] activities = {GLSurfaceViewDrawActivity.class, GLSurfaceViewNativeDrawActivity.class};
+
 
     private RecyclerView listView;
     private ListAdapter adapter;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             button = (Button) itemView;
+            button.setAllCaps(false);
         }
     }
 }
