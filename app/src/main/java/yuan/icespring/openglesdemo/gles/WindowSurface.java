@@ -17,6 +17,9 @@
 package yuan.icespring.openglesdemo.gles;
 
 import android.graphics.SurfaceTexture;
+import android.opengl.EGL14;
+import android.opengl.EGLSurface;
+import android.util.Log;
 import android.view.Surface;
 
 /**
@@ -24,9 +27,15 @@ import android.view.Surface;
  * <p>
  * It's good practice to explicitly release() the surface, preferably from a "finally" block.
  */
-public class WindowSurface extends EglSurfaceBase {
+public class WindowSurface {
     private Surface mSurface;
     private boolean mReleaseSurface;
+
+    protected static final String TAG = GlUtil.TAG;
+
+    private EglCore mEglCore;
+
+    private EGLSurface mEGLSurface = EGL14.EGL_NO_SURFACE;
 
     /**
      * Associates an EGL surface with the native window surface.
@@ -37,7 +46,7 @@ public class WindowSurface extends EglSurfaceBase {
      * surfaceDestroyed() callback won't fire).
      */
     public WindowSurface(EglCore eglCore, Surface surface, boolean releaseSurface) {
-        super(eglCore);
+        mEglCore = eglCore;
         createWindowSurface(surface);
         mSurface = surface;
         mReleaseSurface = releaseSurface;
@@ -47,9 +56,56 @@ public class WindowSurface extends EglSurfaceBase {
      * Associates an EGL surface with the SurfaceTexture.
      */
     public WindowSurface(EglCore eglCore, SurfaceTexture surfaceTexture) {
-        super(eglCore);
+        mEglCore = eglCore;
         createWindowSurface(surfaceTexture);
     }
+
+    /**
+     * Creates a window surface.
+     * <p>
+     * @param surface May be a Surface or SurfaceTexture.
+     */
+    public void createWindowSurface(Object surface) {
+        if (mEGLSurface != EGL14.EGL_NO_SURFACE) {
+            throw new IllegalStateException("surface already created");
+        }
+        mEGLSurface = mEglCore.createWindowSurface(surface);
+
+        // Don't cache width/height here, because the size of the underlying surface can change
+        // out from under us (see e.g. HardwareScalerActivity).
+        //mWidth = mEglCore.querySurface(mEGLSurface, EGL14.EGL_WIDTH);
+        //mHeight = mEglCore.querySurface(mEGLSurface, EGL14.EGL_HEIGHT);
+    }
+
+    /**
+     * Release the EGL surface.
+     */
+    public void releaseEglSurface() {
+        mEglCore.releaseSurface(mEGLSurface);
+        mEGLSurface = EGL14.EGL_NO_SURFACE;
+    }
+
+    /**
+     * Makes our EGL context and surface current.
+     */
+    public void makeCurrent() {
+        mEglCore.makeCurrent(mEGLSurface);
+    }
+
+
+    /**
+     * Calls eglSwapBuffers.  Use this to "publish" the current frame.
+     *
+     * @return false on failure
+     */
+    public boolean swapBuffers() {
+        boolean result = mEglCore.swapBuffers(mEGLSurface);
+        if (!result) {
+            Log.d(TAG, "WARNING: swapBuffers() failed");
+        }
+        return result;
+    }
+
 
     /**
      * Releases any resources associated with the EGL surface (and, if configured to do so,

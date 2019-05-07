@@ -62,7 +62,7 @@ public final class EglCore {
      * Equivalent to EglCore(null, 0).
      */
     public EglCore() {
-        this(null, 0);
+        this(null, FLAG_TRY_GLES3);
     }
 
     /**
@@ -92,7 +92,6 @@ public final class EglCore {
 
         // Try to get a GLES3 context, if requested.
         if ((flags & FLAG_TRY_GLES3) != 0) {
-            //Log.d(TAG, "Trying GLES 3");
             EGLConfig config = getConfig(flags, 3);
             if (config != null) {
                 int[] attrib3_list = {
@@ -103,7 +102,6 @@ public final class EglCore {
                         attrib3_list, 0);
 
                 if (EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
-                    //Log.d(TAG, "Got GLES 3 config");
                     mEGLConfig = config;
                     mEGLContext = context;
                     mGlVersion = 3;
@@ -111,7 +109,6 @@ public final class EglCore {
             }
         }
         if (mEGLContext == EGL14.EGL_NO_CONTEXT) {  // GLES 2 only, or GLES 3 attempt failed
-            //Log.d(TAG, "Trying GLES 2");
             EGLConfig config = getConfig(flags, 2);
             if (config == null) {
                 throw new RuntimeException("Unable to find a suitable EGLConfig");
@@ -343,21 +340,6 @@ public final class EglCore {
      */
     public int getGlVersion() {
         return mGlVersion;
-    }
-
-    /**
-     * Writes the current display, context, and surface to the log.
-     */
-    public static void logCurrent(String msg) {
-        EGLDisplay display;
-        EGLContext context;
-        EGLSurface surface;
-
-        display = EGL14.eglGetCurrentDisplay();
-        context = EGL14.eglGetCurrentContext();
-        surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW);
-        Log.i(TAG, "Current EGL (" + msg + "): display=" + display + ", context=" + context +
-                ", surface=" + surface);
     }
 
     /**

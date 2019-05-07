@@ -99,7 +99,7 @@ public class TextureViewDrawActivity extends AppCompatActivity {
                     }
                 }
 
-                mEglCore = new EglCore(null, EglCore.FLAG_TRY_GLES3);
+                mEglCore = new EglCore();
                 WindowSurface windowSurface = new WindowSurface(mEglCore, mSurfaceTexture);
                 windowSurface.makeCurrent();
 
