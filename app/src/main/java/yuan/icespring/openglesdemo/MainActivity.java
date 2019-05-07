@@ -14,7 +14,9 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static Class[] activities = {GLSurfaceViewDrawActivity.class, GLSurfaceViewNativeDrawActivity.class};
+    private static Class[] activities = {GLSurfaceViewDrawActivity.class,
+            GLSurfaceViewNativeDrawActivity.class,
+            TextureViewDrawActivity.class};
 
 
     private RecyclerView listView;
@@ -31,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
     }
-
-
 
 
     private class ListAdapter extends RecyclerView.Adapter<MyViewHolder> {
