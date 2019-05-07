@@ -1,6 +1,7 @@
 package yuan.icespring.openglesdemo;
 
 import android.graphics.SurfaceTexture;
+import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -121,6 +122,10 @@ public class TextureViewDraw2Activity extends AppCompatActivity {
         private void doDraw(WindowSurface eglSurface) {
 
 
+
+
+            mProgramHandle = GlUtil.createProgram(vertexShaderSource, fragmentShaderSource);
+            mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "vPosition");
             // 使用VAO / VBO 绘制
             int[] vao = new int[1];
             int[] vbo = new int[1];
@@ -128,16 +133,17 @@ public class TextureViewDraw2Activity extends AppCompatActivity {
             GLES30.glGenVertexArrays(1, vao, 0);
             GLES30.glGenBuffers(1, vbo, 0);
 
+            // 从bind VAO这一刻起，所有绑定的VBO都由这个VAO来管理
             GLES30.glBindVertexArray(vao[0]);
+            // 从bind VBO这一刻起，所有glVertexAttribPointer链接的都是这个VBO所指向的数据
             GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vbo[0]);
             GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexBuffer.capacity() * 4, vertexBuffer, GLES30.GL_STATIC_DRAW);
             GLES30.glVertexAttribPointer(mPositionHandle, 2, GLES30.GL_FLOAT, false, 0, 0);
 
+            // 解除绑定VBO
             GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
+            // 解除绑定VAO
             GLES30.glBindVertexArray(0);
-
-            mProgramHandle = GlUtil.createProgram(vertexShaderSource, fragmentShaderSource);
-
 
 
             // 好了，开始绘制
