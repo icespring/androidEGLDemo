@@ -1,7 +1,6 @@
 package yuan.icespring.openglesdemo;
 
 import android.content.Intent;
-import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,9 +13,12 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static Class[] activities = {GLSurfaceViewDrawActivity.class,
+    private static Class[] activities = {
+            GLSurfaceViewDrawActivity.class,
             GLSurfaceViewNativeDrawActivity.class,
-            TextureViewDrawActivity.class};
+            TextureViewDrawActivity.class,
+            TextureViewDraw2Activity.class
+    };
 
 
     private RecyclerView listView;
