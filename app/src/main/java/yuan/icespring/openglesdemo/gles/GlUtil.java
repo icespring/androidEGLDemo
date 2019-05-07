@@ -26,12 +26,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
- * Some OpenGL utility functions.
+ * OpenGL的工具类
  */
 public class GlUtil {
     public static final String TAG = "Grafika";
 
-    /** Identity matrix for general use.  Don't modify or life will get weird. */
     public static final float[] IDENTITY_MATRIX;
     static {
         IDENTITY_MATRIX = new float[16];
@@ -44,29 +43,39 @@ public class GlUtil {
     private GlUtil() {}     // do not instantiate
 
     /**
-     * Creates a new program from the supplied vertex and fragment shaders.
+     * 使用VS和FS来创建一个可以用于绘制的program
      *
      * @return A handle to the program, or 0 on failure.
      */
     public static int createProgram(String vertexSource, String fragmentSource) {
+        // 编译顶点着色器
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
         if (vertexShader == 0) {
             return 0;
         }
+
+        // 编译片段着色器
         int pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
         if (pixelShader == 0) {
             return 0;
         }
 
+        // 创建一个可用的程序指针
         int program = GLES20.glCreateProgram();
         checkGlError("glCreateProgram");
         if (program == 0) {
             Log.e(TAG, "Could not create program");
         }
+
+        // 输入顶点着色器
         GLES20.glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
+
+        // 输入片段着色器
         GLES20.glAttachShader(program, pixelShader);
         checkGlError("glAttachShader");
+
+        //
         GLES20.glLinkProgram(program);
         int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
@@ -80,11 +89,11 @@ public class GlUtil {
     }
 
     /**
-     * Compiles the provided shader source.
+     * 编译shader源码
      *
      * @return A handle to the shader, or 0 on failure.
      */
-    public static int loadShader(int shaderType, String source) {
+    private static int loadShader(int shaderType, String source) {
         int shader = GLES20.glCreateShader(shaderType);
         checkGlError("glCreateShader type=" + shaderType);
         GLES20.glShaderSource(shader, source);
@@ -103,7 +112,7 @@ public class GlUtil {
     /**
      * Checks to see if a GLES error has been raised.
      */
-    public static void checkGlError(String op) {
+    private static void checkGlError(String op) {
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
             String msg = op + ": glError 0x" + Integer.toHexString(error);

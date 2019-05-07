@@ -51,12 +51,14 @@ public class TextureViewDrawActivity extends AppCompatActivity {
         private EglCore mEglCore;
         private boolean mDone;
 
+        // 顶点着色器程序
         private static String vertexShaderSource = "attribute vec4 vPosition;\n" +
                 " void main() {\n" +
                 "     gl_Position = vPosition;\n" +
                 " }";
 
 
+        // 片段着色器程序
         private static String fragmentShaderSource = "precision mediump float;\n" +
                 " uniform vec4 vColor;\n" +
                 " void main() {\n" +
@@ -91,7 +93,7 @@ public class TextureViewDrawActivity extends AppCompatActivity {
                         try {
                             mLock.wait();
                         } catch (InterruptedException ie) {
-                            throw new RuntimeException(ie);     // not expected
+                            throw new RuntimeException(ie);
                         }
                     }
                     if (mDone) {
@@ -103,13 +105,8 @@ public class TextureViewDrawActivity extends AppCompatActivity {
                 WindowSurface windowSurface = new WindowSurface(mEglCore, mSurfaceTexture);
                 windowSurface.makeCurrent();
 
-                // 设置buffer
-                ByteBuffer byteBuffer = ByteBuffer.allocateDirect(triangleCoords.length * 4);
-                byteBuffer.order(ByteOrder.nativeOrder());
                 //将坐标数据转换为FloatBuffer，用以传入给OpenGL ES程序
-                vertexBuffer = byteBuffer.asFloatBuffer();
-                vertexBuffer.put(triangleCoords);
-                vertexBuffer.position(0);
+                vertexBuffer = GlUtil.createFloatBuffer(triangleCoords);
                 mProgramHandle = GlUtil.createProgram(vertexShaderSource, fragmentShaderSource);
 
                 doDraw(windowSurface);

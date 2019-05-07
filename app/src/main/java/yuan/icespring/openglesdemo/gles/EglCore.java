@@ -27,27 +27,15 @@ import android.util.Log;
 import android.view.Surface;
 
 /**
- * Core EGL state (display, context, config).
- * <p>
- * The EGLContext must only be attached to one thread at a time.  This class is not thread-safe.
+ * 用于创建管理EGLContext，EGLContext同一时间只能被attach一次，这里是简单的实现，非安全实现
  */
 public final class EglCore {
     private static final String TAG = GlUtil.TAG;
 
-    /**
-     * Constructor flag: surface must be recordable.  This discourages EGL from using a
-     * pixel format that cannot be converted efficiently to something usable by the video
-     * encoder.
-     */
     public static final int FLAG_RECORDABLE = 0x01;
 
-    /**
-     * Constructor flag: ask for GLES3, fall back to GLES2 if not available.  Without this
-     * flag, GLES2 is used.
-     */
     public static final int FLAG_TRY_GLES3 = 0x02;
 
-    // Android-specific extension.
     private static final int EGL_RECORDABLE_ANDROID = 0x3142;
 
     private EGLDisplay mEGLDisplay = EGL14.EGL_NO_DISPLAY;
@@ -56,19 +44,14 @@ public final class EglCore {
     private int mGlVersion = -1;
 
 
-    /**
-     * Prepares EGL display and context.
-     * <p>
-     * Equivalent to EglCore(null, 0).
-     */
     public EglCore() {
         this(null, FLAG_TRY_GLES3);
     }
 
     /**
-     * Prepares EGL display and context.
-     * <p>
-     * @param sharedContext The context to share, or null if sharing is not desired.
+     * 准备EGLDisplay和EGLContext
+     *
+     * @param sharedContext 传入需要共享的context，null的话会创建一个全新的context
      * @param flags Configuration bit flags, e.g. FLAG_RECORDABLE.
      */
     public EglCore(EGLContext sharedContext, int flags) {
@@ -80,18 +63,22 @@ public final class EglCore {
             sharedContext = EGL14.EGL_NO_CONTEXT;
         }
 
+        // 步骤一 ： 获取默认的EGLDisplay
         mEGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             throw new RuntimeException("unable to get EGL14 display");
         }
+
+        // 步骤二 ： 针对某个display初始化某个版本的EGL
         int[] version = new int[2];
         if (!EGL14.eglInitialize(mEGLDisplay, version, 0, version, 1)) {
             mEGLDisplay = null;
             throw new RuntimeException("unable to initialize EGL14");
         }
 
-        // Try to get a GLES3 context, if requested.
+        // 步骤三 ： 尝试获取GLES 3.x 版本的Context
         if ((flags & FLAG_TRY_GLES3) != 0) {
+            // 获取最优的config
             EGLConfig config = getConfig(flags, 3);
             if (config != null) {
                 int[] attrib3_list = {
@@ -133,7 +120,7 @@ public final class EglCore {
     }
 
     /**
-     * Finds a suitable EGLConfig.
+     * 获取最优config
      *
      * @param flags Bit flags from constructor.
      * @param version Must be 2 or 3.
@@ -166,7 +153,6 @@ public final class EglCore {
         int[] numConfigs = new int[1];
         if (!EGL14.eglChooseConfig(mEGLDisplay, attribList, 0, configs, 0, configs.length,
                 numConfigs, 0)) {
-            Log.w(TAG, "unable to find RGB8888 / " + version + " EGLConfig");
             return null;
         }
         return configs[0];
@@ -220,6 +206,7 @@ public final class EglCore {
 
     /**
      * Creates an EGL surface associated with a Surface.
+     * 创建一个EGL Surface，与系统的Surface进行绑定
      * <p>
      * If this is destined for MediaCodec, the EGLConfig should have the "recordable" attribute.
      */
@@ -228,10 +215,14 @@ public final class EglCore {
             throw new RuntimeException("invalid surface: " + surface);
         }
 
-        // Create a window surface, and attach it to the Surface we received.
         int[] surfaceAttribs = {
                 EGL14.EGL_NONE
         };
+
+        // 这里获取一个窗口类型的surface
+        // 第一个参数是EGLDisplay的指针
+        // 第二个参数是EGLConfig
+        // 第三个参数是Android中的Window，支持Surface和SurfaceTexture
         EGLSurface eglSurface = EGL14.eglCreateWindowSurface(mEGLDisplay, mEGLConfig, surface,
                 surfaceAttribs, 0);
         checkEglError("eglCreateWindowSurface");
@@ -243,6 +234,7 @@ public final class EglCore {
 
     /**
      * Creates an EGL surface associated with an offscreen buffer.
+     * 创建一个离屏渲染的EGLSurface
      */
     public EGLSurface createOffscreenSurface(int width, int height) {
         int[] surfaceAttribs = {
@@ -260,7 +252,7 @@ public final class EglCore {
     }
 
     /**
-     * Makes our EGL context current, using the supplied surface for both "draw" and "read".
+     * 使用当前线程的Context，需要在切换线程之后，执行任何gl函数前调用，否则无效果
      */
     public void makeCurrent(EGLSurface eglSurface) {
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
@@ -296,7 +288,7 @@ public final class EglCore {
     }
 
     /**
-     * Calls eglSwapBuffers.  Use this to "publish" the current frame.
+     * 交换缓冲区，用于将当前绘制的帧切换到屏幕上显示
      *
      * @return false on failure
      */

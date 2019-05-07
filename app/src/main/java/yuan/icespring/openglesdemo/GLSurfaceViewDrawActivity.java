@@ -83,10 +83,7 @@ public class GLSurfaceViewDrawActivity extends AppCompatActivity {
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(triangleCoords.length * 4);
             byteBuffer.order(ByteOrder.nativeOrder());
             //将坐标数据转换为FloatBuffer，用以传入给OpenGL ES程序
-            vertexBuffer = byteBuffer.asFloatBuffer();
-            vertexBuffer.put(triangleCoords);
-            vertexBuffer.position(0);
-
+            vertexBuffer = GlUtil.createFloatBuffer(triangleCoords);
             mProgram = GlUtil.createProgram(vertexShaderSource, fragmentShaderSource);
 
         }
