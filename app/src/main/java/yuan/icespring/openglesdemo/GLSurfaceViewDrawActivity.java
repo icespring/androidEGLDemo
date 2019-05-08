@@ -5,8 +5,6 @@ import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -46,7 +44,6 @@ public class GLSurfaceViewDrawActivity extends AppCompatActivity {
         setContentView(R.layout.activity_glsurface_view_draw);
         surfaceView = findViewById(R.id.surface1);
         surfaceView.setEGLContextClientVersion(3);
-
         surfaceView.setRenderer(new MyRender());
     }
 
@@ -79,9 +76,6 @@ public class GLSurfaceViewDrawActivity extends AppCompatActivity {
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             // 设置背景
             GLES20.glClearColor(1.0f,1.0f,1.0f,1.0f);
-            // 设置buffer
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(triangleCoords.length * 4);
-            byteBuffer.order(ByteOrder.nativeOrder());
             //将坐标数据转换为FloatBuffer，用以传入给OpenGL ES程序
             vertexBuffer = GlUtil.createFloatBuffer(triangleCoords);
             mProgram = GlUtil.createProgram(vertexShaderSource, fragmentShaderSource);
