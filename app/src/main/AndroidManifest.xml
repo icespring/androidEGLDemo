@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SurfaceViewNatvieDrawActivity"></activity>
+        <activity android:name=".TextureViewNativeDrawActivity"></activity>
+        <activity android:name=".SurfaceViewNatvieDrawActivity" />
         <activity android:name=".TextureViewDrawActivity" />
         <activity android:name=".TextureViewDraw2Activity" />
         <activity android:name=".GLSurfaceViewNativeDrawActivity" />

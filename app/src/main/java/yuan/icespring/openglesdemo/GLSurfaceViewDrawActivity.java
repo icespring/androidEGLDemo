@@ -12,6 +12,9 @@ import javax.microedition.khronos.opengles.GL10;
 
 import yuan.icespring.openglesdemo.gles.GlUtil;
 
+/**
+ * 使用GLSurfaceView创建的EGL环境和GL线程进行绘制
+ */
 public class GLSurfaceViewDrawActivity extends AppCompatActivity {
 
 

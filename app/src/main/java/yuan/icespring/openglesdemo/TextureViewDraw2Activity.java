@@ -14,6 +14,9 @@ import yuan.icespring.openglesdemo.gles.EglCore;
 import yuan.icespring.openglesdemo.gles.GlUtil;
 import yuan.icespring.openglesdemo.gles.WindowSurface;
 
+/**
+ * 使用EGLCore在上层创建EGL环境和线程，进行绘制，使用VAO管理
+ */
 public class TextureViewDraw2Activity extends AppCompatActivity {
 
 

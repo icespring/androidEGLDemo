@@ -10,6 +10,9 @@ import android.widget.FrameLayout;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * 使用GLSurfaceView创建的EGL环境和GL线程，用Native的方式进行绘制
+ */
 public class GLSurfaceViewNativeDrawActivity extends AppCompatActivity {
 
     GLSurfaceView mView;

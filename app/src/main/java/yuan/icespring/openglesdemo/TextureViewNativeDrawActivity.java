@@ -1,26 +1,29 @@
 package yuan.icespring.openglesdemo;
 
+import android.graphics.SurfaceTexture;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
+import android.view.TextureView;
 
-/**
- * 使用SurfaceView，在native层进行EGL环境和GL线程的创建，并在native层直接绘制
- */
-public class SurfaceViewNatvieDrawActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+public class TextureViewNativeDrawActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
-    private SurfaceView surfaceView;
+
+    private TextureView textureView;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_surface_view_natvie_draw);
+        setContentView(R.layout.activity_texture_view_draw);
+        textureView = findViewById(R.id.texture1);
 
-        surfaceView = findViewById(R.id.surface2);
-        surfaceView.getHolder().addCallback(this);
+        textureView.setSurfaceTextureListener(this);
+
     }
 
 
@@ -49,19 +52,27 @@ public class SurfaceViewNatvieDrawActivity extends AppCompatActivity implements 
     }
 
 
+
+
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        GLESlib.nativeSetSurface(holder.getSurface());
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        Surface surfaceWrapper = new Surface(surface);
+        GLESlib.nativeSetSurface(surfaceWrapper);
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
 
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         GLESlib.nativeSetSurface(null);
+        return false;
     }
 
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+    }
 }

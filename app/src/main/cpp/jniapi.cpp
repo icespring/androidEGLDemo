@@ -17,6 +17,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+#define __ANDROID_API__ 21
 
 #include <stdint.h>
 #include <jni.h>
@@ -91,7 +92,7 @@ static JNINativeMethod method_table[] = {
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = NULL;
     if (vm->AttachCurrentThread(&env, NULL) == JNI_OK) {
-        jclass clazz = env->FindClass("yuan/icespring/openglesdemo/SurfaceViewNatvieDrawActivity");
+        jclass clazz = env->FindClass("yuan/icespring/openglesdemo/GLESlib");
         if (clazz == NULL) {
             return JNI_ERR;
         }

@@ -12,6 +12,7 @@ android {
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
+                arguments '-DANDROID_PLATFORM=android-21'
             }
         }
         ndk {

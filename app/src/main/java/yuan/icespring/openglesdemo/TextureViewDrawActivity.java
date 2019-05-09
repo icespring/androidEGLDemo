@@ -7,14 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.TextureView;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import yuan.icespring.openglesdemo.gles.EglCore;
 import yuan.icespring.openglesdemo.gles.GlUtil;
 import yuan.icespring.openglesdemo.gles.WindowSurface;
 
+/**
+ * 使用EGLCore在上层创建EGL环境和线程，进行绘制
+ */
 public class TextureViewDrawActivity extends AppCompatActivity {
 
 

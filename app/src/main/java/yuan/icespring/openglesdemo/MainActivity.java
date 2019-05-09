@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+/**
+ * 启动页
+ */
 public class MainActivity extends AppCompatActivity {
 
 
@@ -18,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
             GLSurfaceViewNativeDrawActivity.class,
             TextureViewDrawActivity.class,
             TextureViewDraw2Activity.class,
-            SurfaceViewNatvieDrawActivity.class
+            SurfaceViewNatvieDrawActivity.class,
+            TextureViewNativeDrawActivity.class
     };
 
 
