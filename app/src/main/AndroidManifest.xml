@@ -15,6 +15,7 @@
         <activity android:name=".TextureViewDraw2Activity" />
         <activity android:name=".GLSurfaceViewNativeDrawActivity" />
         <activity android:name=".GLSurfaceViewDrawActivity" />
+        <activity android:name=".GLSurfaceViewDrawTexurueActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -22,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
             TextureViewDrawActivity.class,
             TextureViewDraw2Activity.class,
             SurfaceViewNatvieDrawActivity.class,
-            TextureViewNativeDrawActivity.class
+            TextureViewNativeDrawActivity.class,
+            GLSurfaceViewDrawTexurueActivity.class
     };
 
 
